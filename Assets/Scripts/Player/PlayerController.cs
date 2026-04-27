@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Windows;
 
 public enum FacingFlipMode
 {
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private Vector3 initialScale;
+    private Animator animator;
 
     public int FacingSign { get; private set; } = 1;
     public FacingFlipMode FlipMode => facingFlipMode;
@@ -33,6 +35,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         initialScale = transform.localScale;
 
         if (inputReader == null)
@@ -74,6 +77,7 @@ public class PlayerController : MonoBehaviour
         if (inputReader == null) return;
 
         UpdateFacing(inputReader.MoveInput.x);
+        UpdateAnimations();
     }
 
     private void Move()
@@ -134,6 +138,14 @@ public class PlayerController : MonoBehaviour
             groundCheckRadius,
             groundLayer
         );
+    }
+
+    private void UpdateAnimations()
+    {
+        float speedValue = Mathf.Abs(inputReader.MoveInput.x);
+        Debug.Log(speedValue);
+
+        animator.SetFloat("Speed", speedValue);
     }
 
     private void OnDrawGizmosSelected()
